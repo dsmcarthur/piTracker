@@ -1,10 +1,13 @@
 import sys
 import time
 import serial
+import trackerUtils
 
 class fonaGPS(object):
-        
-    def __init__(self):
+    global ser
+    ser = trackerUtils.openSerialPort()
+
+    def openGPS(self):
         print("Turning on the GPS\r")
         ser.write("AT+CGNSPWR=1\r")  # Turn on the GPS
         time.sleep(1)
@@ -18,30 +21,11 @@ class fonaGPS(object):
             if "ERROR" in gpsPower:
                 print("GPS has no power")
                 print("GPS is off. Turning on...")
-               # writeToFile('Sys_Log.txt', ("GPS status is " + gpsPower))
+                #writeToFile('Sys_Log.txt', ("GPS status is " + gpsPower))
                 ser.write("AT+CGNSPWR=1")  # Power on GPS module
         time.sleep(0.5)
         ser.write("AT+CGNSRST=1\r")  # GPS reset set to hot start mode
-        
-    #def openGPS(self):
-    #    print("Turning on the GPS\r")
-    #    ser.write("AT+CGNSPWR=1\r")  # Turn on the GPS
-    #    time.sleep(1)
-        # Check GPS power status is ON!
-    #    while True:
-    #        ser.write("AT+CGNSPWR=?\r")
-    #        gpsPower = ser.readline()
-    #        if "1" in gpsPower:
-    #            print("GPS is powered on")
-    #            return True
-    #        if "ERROR" in gpsPower:
-    #            print("GPS has no power")
-    #            print("GPS is off. Turning on...")
-               # writeToFile('Sys_Log.txt', ("GPS status is " + gpsPower))
-    #            ser.write("AT+CGNSPWR=1")  # Power on GPS module
-    #    time.sleep(0.5)
-    #    ser.write("AT+CGNSRST=1\r")  # GPS reset set to hot start mode
-    #    return True
+        return True
         
     # Check to see if the GPS has aquired any satellites
     def getGPSFix(self):

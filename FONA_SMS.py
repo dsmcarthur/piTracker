@@ -1,11 +1,15 @@
 import sys
 import time
 import serial
+import trackerUtils
 
 class fonaSMS(object):
     global ctrlZ
     ctrlZ = '\x1a'
         
+    global ser
+    ser = trackerUtils.openSerialPort()
+
     # CHECK FONA
     def checkFONA(self):
         # SETUP SERIAL MODEM FOR PI/FONA
@@ -16,7 +20,7 @@ class fonaSMS(object):
                 print("The FONA is " + fonaStatus)
                 return True
             if "ERROR" in fonaStatus:
-             #   writeToFile(logFileName, ("FONA status is " + fonaStatus)) 
+                #   writeToFile(logFileName, ("FONA status is " + fonaStatus)) 
                 print("The FONA is " + fonaStatus)
         return True
             
