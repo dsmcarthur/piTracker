@@ -55,45 +55,25 @@ class fonaGPS(object):
 
     # converts Rx data to Decimal Degree format
     def convertGPS(self, gpsV1):
-        global deg
-        deg = chr(37)
         array = gpsV1.split(",")
         #### Format from DDMM.MMMMMM to DD MM.MMMMMM
         # Latitude
-        global latDeg
-        global latMin
-        lat = array[1]  # text array pull latitude from input
-        floatLat = float(lat)  # text to float
-        floatLat = floatLat / 100  # float math
-        strLat = str(floatLat)  # DD to string
-        arrayLat = strLat.split(".")  # split string along .
-        latDeg = arrayLat[0]  # DD array member
-        latDeg = float(latDeg)
-        latMin = arrayLat[1]  # MMMMMM array member
-        latMin = float(latMin)  # str to float
-        latMin = latMin / 60                  
-        latMin = latMin / 10000               
-        latitude = latDeg + latMin
-        latitude = str(latitude)
-        print(latitude + " is decimal degree latitude")
+        lat = array[1]
+        DDlat = int(float(lat)/100)            # Retrieves DD
+        MMlat = float(lat)-DDlat*100
+        MMlat = MMlat/60
+        Lat = DDlat+MMlat
+        Lat = str(Lat)
+        print(Lat)
     
         # Longitude
-        global lonDeg
-        global lonMin
-        lon = array[2]  # text array pulling longitude from ,,,
-        floatLon = float(lon)  # text to float
-        floatLon = floatLon / 100  # float math
-        strLon = str(floatLon)
-        arrayLon = strLon.split(".")  # split DDMM.MMMM to DD.MMMMMMM along .
-        lonDeg = arrayLon[0]  # lonDeg = DD
-        lonDeg = float(lonDeg)              
-        lonMin = arrayLon[1]  # lonMin = MMMMMM
-        lonMin = float(lonMin)  # str to float
-        lonMin = lonMin / 60
-        lonMin = lonMin / 10000
-        longitude = lonDeg + lonMin
-        longitude = str(longitude)
-        print(longitude + " is decimal degree longitude")
+        lon = array[2]                      # text array pulling longitude
+        DDlon = int(float(lon)/100)
+        MMlon = float(lon)-DDlon*100
+        MMlon = MMlon/60
+        Lon = DDlon+MMlon
+        Lon = str(Lon)
+        print(Lon)
     
         # Altitude
         global alt
@@ -115,17 +95,21 @@ class fonaGPS(object):
         heading = array[8]
         print("Heading is " + heading + " degrees")
     
-        # Write parsed GPS to Log file
-        gpsMsg1 = (latitude + "," + longitude + " Fix Coords in Decimal Degree")
-    #    writeToFile('GPS_Log.txt', gpsMsg1)
-        gpsMsg2 = ('Altitude: ' + alt + ' meters, Speed: ' + speed + ' knots, Heading: ' + heading + ' Time: ' + utc + ' UTC')
-       # writeToFile('GPS_Log.txt', gpsMsg2) 
-        
         # Google Maps link
         global gMapsLink
-        gMapsLink = ("https://www.google.com/maps/@" + latitude + "," + longitude)
+        gMapsLink = ("https://www.google.com/maps/search/?api=1&query=" + Lat + "," + Lon)
         print(gMapsLink)
         return gMapsLink
+    
+        # Write to GPS Log file
+        gpsMsg1 = (Lat + "," + Lon + " Fix Coords in Decimal Degree")
+        gpsMsg2 = ('Altitude: ' + alt + ' meters, Speed: ' + speed + ' knots, Heading: ' + heading + ' Time: ' + utc2 + ' UTC')
+#        writeToFile(gpsFileName, gpsMsg1)
+#        writeToFile(gpsFileName, gpsMsg2)     
+#        writeToFile(gpsFileName, gpsV1)                 # Writing Original data to file for T/S purposes
+#        writeToFile(gpsFileName, gMapsLink)             # Write Map Link to file
+
+        
     
         # Close GPS
         def closeGPS():
